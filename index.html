@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ghibli Dog Jump Game</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #e6f0ef;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: linear-gradient(#e6f0ef, #b8d8d8);
+      border-bottom: 3px solid #5b7365;
+    }
+  </style>
+</head>
+<body>
+<canvas id="game" width="800" height="200"></canvas>
+
+<script>
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+
+  const dog = {
+    x: 50,
+    y: 160,
+    width: 40,
+    height: 40,
+    vy: 0,
+    jumping: false
+  };
+
+  const gravity = 1;
+  const obstacles = [];
+  const speed = 5;
+  let score = 0;
+  let backgroundIndex = 0;
+
+  const backgrounds = [
+    ["#e6f0ef", "#b8d8d8"],   // Calm day
+    ["#fefbd8", "#d2e69c"],   // Sunny hills
+    ["#d0e1f9", "#4d648d"],   // Twilight
+    ["#f7cac9", "#92a8d1"],   // Sakura pink
+    ["#ffe5b4", "#ffd700"]    // Sunset gold
+  ];
+
+  const dogImage = new Image();
+  dogImage.src = "https://raw.githubusercontent.com/francyz-ghibli-assets/dog-sprite/main/dog-ghibli.png";
+
+  function drawDog() {
+    if (dogImage.complete) {
+      ctx.drawImage(dogImage, dog.x, dog.y, dog.width, dog.height);
+    } else {
+      ctx.fillStyle = "#6a4f3c";
+      ctx.fillRect(dog.x, dog.y, dog.width, dog.height);
+    }
+  }
+
+  function drawObstacle(ob) {
+    ctx.fillStyle = "#5b7365";
+    ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+  }
+
+  function drawScore() {
+    ctx.fillStyle = "#333";
+    ctx.font = "16px Arial";
+    ctx.fillText("Score: " + score, 700, 20);
+  }
+
+  function updateBackground() {
+    const bg = backgrounds[backgroundIndex % backgrounds.length];
+    canvas.style.background = `linear-gradient(${bg[0]}, ${bg[1]})`;
+  }
+
+  function spawnObstacle() {
+    const height = Math.random() * 30 + 20;
+    obstacles.push({ x: canvas.width, y: 200 - height, width: 20, height, scored: false });
+  }
+
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Gravity & jump physics
+    if (dog.jumping) {
+      dog.vy += gravity;
+      dog.y += dog.vy;
+      if (dog.y >= 160) {
+        dog.y = 160;
+        dog.vy = 0;
+        dog.jumping = false;
+      }
+    }
+
+    drawDog();
+    drawScore();
+
+    // Loop through obstacles in reverse for safe removal
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      const ob = obstacles[i];
+      ob.x -= speed;
+      drawObstacle(ob);
+
+      // Collision detection
+      if (
+        dog.x < ob.x + ob.width &&
+        dog.x + dog.width > ob.x &&
+        dog.y + dog.height > ob.y
+      ) {
+        alert("Game Over! Final Score: " + score);
+        document.location.reload();
+        return;
+      }
+
+      // Score increment
+      if (!ob.scored && ob.x + ob.width < dog.x) {
+        score++;
+        ob.scored = true;
+
+        if (score % 100 === 0) {
+          backgroundIndex++;
+          updateBackground();
+        }
+      }
+
+      // Remove off-screen obstacles
+      if (ob.x + ob.width < 0) {
+        obstacles.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Space" && !dog.jumping) {
+      dog.vy = -15;
+      dog.jumping = true;
+    }
+  });
+
+  document.addEventListener("touchstart", () => {
+    if (!dog.jumping) {
+      dog.vy = -15;
+      dog.jumping = true;
+    }
+  });
+
+  setInterval(spawnObstacle, 2000);
+  updateBackground();
+  update();
+</script>
+</body>
+</html>
