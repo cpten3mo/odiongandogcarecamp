@@ -1,0 +1,59 @@
+{
+  "goal": "Create a browser-based endless runner game similar to Google's offline T-Rex game, but featuring a dog instead of a dinosaur. The game should run on desktop and mobile browsers using only HTML, CSS, and JavaScript. No frameworks or external libraries.",
+  "requirements": {
+    "gameTitle": "Dog Runner",
+    "playerCharacter": {
+      "sprite": "A running black dog with flapping ears (use placeholder if needed)",
+      "animation": "Run cycle (2-4 frames), jump, and duck (optional)"
+    },
+    "obstacles": [
+      {
+        "name": "Trash Can",
+        "behavior": "Static, appears from right and moves left"
+      },
+      {
+        "name": "Cat",
+        "behavior": "Moves slightly up and down to simulate movement"
+      },
+      {
+        "name": "Park Bench",
+        "behavior": "Static, larger obstacle requiring jump timing"
+      }
+    ],
+    "mechanics": {
+      "controls": "Spacebar or Tap to jump",
+      "physics": "Gravity, jump height, and ground detection",
+      "scoring": "Distance-based score, increases over time",
+      "speedIncrease": "Gradually increases game speed for difficulty",
+      "collisionDetection": "Ends game on hit with any obstacle"
+    },
+    "UI": {
+      "scoreDisplay": "Top-right corner score tracker",
+      "startScreen": "Simple overlay with 'Tap to Start'",
+      "gameOverScreen": "Score display and restart button"
+    },
+    "audio": {
+      "jumpSound": "Basic dog bark",
+      "gameOverSound": "Sad dog whimper or short tone",
+      "backgroundMusic": "Optional, loopable soft 8-bit theme"
+    },
+    "assets": {
+      "sprites": "Use placeholder pixel art for dog, ground, obstacles",
+      "sounds": "Use free placeholder sounds or generate dummy audio files"
+    },
+    "fileStructure": {
+      "index.html": "Main HTML file containing canvas and basic UI",
+      "style.css": "Game styles (centered canvas, retro font)",
+      "game.js": "All core logic: rendering, controls, collision, scoring",
+      "assets/": {
+        "images/": ["dog_run.png", "dog_jump.png", "trash_can.png", "cat.png", "bench.png"],
+        "sounds/": ["jump.wav", "gameover.wav", "bgm.mp3"]
+      }
+    }
+  },
+  "bonusFeatures": {
+    "dayNightCycle": "Background color changes after certain score intervals",
+    "mobileSupport": "Tap support for jump, responsive canvas",
+    "highScore": "Store and display high score in localStorage"
+  }
+}
